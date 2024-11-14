@@ -68,11 +68,28 @@ class DiffSum {
         return sum;
     }
 
+    static int version3(int[] rawXs) {
+        int[] xs = rawXs.clone();
+        // クイックソート or マージソートでソート
+        Arrays.sort(xs);
+
+        int n = xs.length;
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            // xs[i] は i 回足され      : 自分より小さい数との差分で足される回数
+            //         n-i-1 回引かれる : 自分より大きい数との差分で引かれる回数
+            sum += xs[i] * i - xs[i] * (n - i - 1);
+        }
+        sum *= 2;
+        return sum;
+    }
+
     public static void main(String[] args) {
         final int[] xs = {5, 2, 9, 8};
 
         System.out.println(version0(xs));
         System.out.println(version1(xs));
         System.out.println(version2(xs));
+        System.out.println(version3(xs));
     }
 }
