@@ -1,12 +1,13 @@
 package graffiti2024;
 
+import java.util.Arrays;
+
 // The sum of the absolute differences of all possible combinations.
 // |xi - xj| の総当たり sum を求める
 class DiffSum {
     // 元のシグマで表現された数式に充実
     // O(N^2)
-    static int version0() {
-        int[] xs = {5, 2, 9, 8};
+    static int version0(int[] xs) {
         int n = xs.length;
         int sum = 0;
         for (int i = 0; i < n; i++) {
@@ -22,8 +23,7 @@ class DiffSum {
     //      - 合計を2倍する
     //      - j = i + 1 から始める
     // 結局 O(N^2) だけど、内側のループは n(n - 1) / 2 回実行なので version0 よりは効率的
-    static int version1() {
-        int[] xs = {5, 2, 9, 8};
+    static int version1(int[] xs) {
         int n = xs.length;
         int sum = 0;
         for (int i = 0; i < n; i++) {
@@ -51,8 +51,11 @@ class DiffSum {
     //  5 : 1回足す、2回引く
     //  8 : 2回足す、1回引く
     //  9 : 3回足す、0回引く
-    static int version2() {
-        int[] xs = {2, 5, 8, 9}; // クイックソート or マージソートでソート済みとする
+    static int version2(int[] rawXs) {
+        int[] xs = rawXs.clone();
+        // クイックソート or マージソートでソート
+        Arrays.sort(xs);
+
         int n = xs.length;
         var sum = 0;
         var cumSum = 0; // 一番左の要素は早めに積まれて毎度引かれる
@@ -66,8 +69,10 @@ class DiffSum {
     }
 
     public static void main(String[] args) {
-        System.out.println(version0());
-        System.out.println(version1());
-        System.out.println(version2());
+        final int[] xs = {5, 2, 9, 8};
+
+        System.out.println(version0(xs));
+        System.out.println(version1(xs));
+        System.out.println(version2(xs));
     }
 }
