@@ -1,4 +1,4 @@
-package graffiti2024;
+package statistics101;
 
 import java.util.Arrays;
 
