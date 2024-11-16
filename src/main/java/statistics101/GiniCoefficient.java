@@ -6,11 +6,10 @@ public class GiniCoefficient {
         double sum = 0;
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
-                sum += Math.abs(xs[i] - xs[j]);
+                sum += Math.abs(xs[i] - xs[j]); // 差を片方向で計算
             }
         }
-        sum *= 2;
-        return sum;
+        return sum * 2; // 対称性を考慮
     }
 
     private static double avg(int[] xs) {
@@ -21,31 +20,34 @@ public class GiniCoefficient {
         return acc / xs.length;
     }
 
-    // mean absolute difference
-    private static double mad(int[] xs) {
+    private static double normalizeDiffSum(int[] xs, double scaleFactor) {
         int n = xs.length;
-        return diffSum(xs) / (n * n);
+        return diffSum(xs) / (n * n * scaleFactor);
     }
 
-    // Gini coefficient
+    // 平均差 (mean absolute difference)
+    private static double mad(int[] xs) {
+        return normalizeDiffSum(xs, 1);
+    }
+
+    // ジニ係数 Gini coefficient
     private static double gi(int[] xs) {
-        int n = xs.length;
-        return diffSum(xs) / (n * n * 2 * avg(xs));
+        return normalizeDiffSum(xs, 2 * avg(xs));
     }
 
     public static void main(String[] args) {
         // 有効数字3桁
 
         int[] A = {0, 3, 3, 5, 5, 5, 5, 7, 7, 10};
-        System.out.println("[A] 平均差: " + mad(A)); // 2.76
-        System.out.println("[A] ジニ係数: " + gi(A)); // 0.276
-
         int[] B = {0, 1, 2, 3, 5, 5, 7, 8, 9, 10};
-        System.out.println("[B] 平均差: " + mad(B)); // 3.76
-        System.out.println("[B] ジニ係数: " + gi(B)); // 0.376
-
         int[] C = {3, 4, 4, 5, 5, 5, 5, 6, 6, 7};
-        System.out.println("[C] 平均差: " + mad(C)); // 1.20
-        System.out.println("[C] ジニ係数: " + gi(C)); // 0.120
+
+        System.out.printf("[A] 平均差: %.2f, ジニ係数: %.3f%n", mad(A), gi(A)); // 2.76, 0.276
+        System.out.printf("[B] 平均差: %.2f, ジニ係数: %.3f%n", mad(B), gi(B)); // 3.76, 0.376
+        System.out.printf("[C] 平均差: %.2f, ジニ係数: %.3f%n", mad(C), gi(C)); // 1.20, 0.120
+
+        // 今回のケースでは平均差とジニ係数が桁ずれのような形になっているが、これは偶然にすぎない
+        // データセット A, B, C の平均がそれぞれ一定に5であり、分母 (2 x 5 = 10) が10と一定となった
+        // 結果、たまたま桁が1つずれるような形になった
     }
 }
