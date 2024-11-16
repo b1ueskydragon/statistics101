@@ -48,7 +48,7 @@ public class GiniCoefficient {
 
     // 標準偏差
     private static double standardDeviation(int[] xs) {
-        return Math.pow(variance(xs), 0.5);
+        return Math.sqrt(variance(xs));
     }
 
     // 変動係数 (coefficient of variation)
