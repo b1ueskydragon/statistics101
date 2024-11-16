@@ -83,13 +83,4 @@ class DiffSum {
         sum *= 2;
         return sum;
     }
-
-    public static void main(String[] args) {
-        final int[] xs = {5, 2, 9, 8};
-
-        System.out.println(version0(xs));
-        System.out.println(version1(xs));
-        System.out.println(version2(xs));
-        System.out.println(version3(xs));
-    }
 }
