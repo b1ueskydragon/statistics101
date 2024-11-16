@@ -8,14 +8,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static statistics101.GiniCoefficient.avg;
-import static statistics101.GiniCoefficient.cv;
-import static statistics101.GiniCoefficient.gi;
-import static statistics101.GiniCoefficient.mad;
-import static statistics101.GiniCoefficient.standardDeviation;
-import static statistics101.GiniCoefficient.variance;
+import static statistics101.DispersionCalculator.avg;
+import static statistics101.DispersionCalculator.cv;
+import static statistics101.DispersionCalculator.gi;
+import static statistics101.DispersionCalculator.mad;
+import static statistics101.DispersionCalculator.standardDeviation;
+import static statistics101.DispersionCalculator.variance;
 
-class GiniCoefficientTest {
+class DispersionCalculatorTest {
     private static final Percentage PER = Percentage.withPercentage(1e-1);
 
     static Stream<Arguments> all() {

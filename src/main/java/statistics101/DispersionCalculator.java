@@ -1,6 +1,6 @@
 package statistics101;
 
-public class GiniCoefficient {
+class DispersionCalculator {
     static double diffSum(int[] xs) {
         final int n = xs.length;
         double sum = 0;
