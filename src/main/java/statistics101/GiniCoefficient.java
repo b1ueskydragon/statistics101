@@ -1,7 +1,7 @@
 package statistics101;
 
 public class GiniCoefficient {
-    private static double diffSum(int[] xs) {
+    static double diffSum(int[] xs) {
         final int n = xs.length;
         double sum = 0;
         for (int i = 0; i < n; i++) {
@@ -12,7 +12,7 @@ public class GiniCoefficient {
         return sum * 2; // 対称性を考慮
     }
 
-    private static double avg(int[] xs) {
+    static double avg(int[] xs) {
         double acc = 0;
         for (int x : xs) {
             acc += x;
@@ -20,23 +20,23 @@ public class GiniCoefficient {
         return acc / xs.length;
     }
 
-    private static double normalizeDiffSum(int[] xs, double scaleFactor) {
+    static double normalizeDiffSum(int[] xs, double scaleFactor) {
         int n = xs.length;
         return diffSum(xs) / (n * n * scaleFactor);
     }
 
     // 平均差 (mean absolute difference)
-    private static double mad(int[] xs) {
+    static double mad(int[] xs) {
         return normalizeDiffSum(xs, 1);
     }
 
     // ジニ係数 Gini coefficient
-    private static double gi(int[] xs) {
+    static double gi(int[] xs) {
         return normalizeDiffSum(xs, 2 * avg(xs));
     }
 
     // 分散
-    private static double variance(int[] xs) {
+    static double variance(int[] xs) {
         final double avg = avg(xs);
         double acc = 0;
         for (int x : xs) {
@@ -47,12 +47,12 @@ public class GiniCoefficient {
     }
 
     // 標準偏差
-    private static double standardDeviation(int[] xs) {
+    static double standardDeviation(int[] xs) {
         return Math.sqrt(variance(xs));
     }
 
     // 変動係数 (coefficient of variation)
-    private static double cv(int[] xs) {
+    static double cv(int[] xs) {
         final double avg = avg(xs);
         if (avg == 0) {
             return 0;
