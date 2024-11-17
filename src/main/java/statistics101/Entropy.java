@@ -1,5 +1,6 @@
 package statistics101;
 
+import java.util.Arrays;
 import java.util.Map;
 
 class Entropy {
@@ -8,14 +9,22 @@ class Entropy {
      * @return entropy
      */
     static double entropy(double[] p) {
+        // 扱うものは確率なので p の要素を全て足してピッタリ1になるべき
+        if (Arrays.stream(p).sum() != 1) {
+            throw new IllegalArgumentException("Probabilities must sum to 1");
+        }
         double acc = 0;
         for (int i = 0; i < p.length; i++) {
+            // 扱うものは確率なので負の値はありえない
+            if (p[i] < 0) {
+                throw new IllegalArgumentException("Probabilities must be greater than 0");
+            }
             // information content (情報量)
             // そのカテゴリがもたらすインパクト (情報量)
             // 「扱いやすい」値にするため対数をとり
             // 「小さい」ものを「大きい」と表現するために符号を反転する
             //  確率 p[i] が小さいほど、起こった時のインパクト -log(p[i]) が強い
-            double information = -1 * Math.log10(p[i]);
+            double information = -1 * safeLog10(p[i]);
 
             // weighting (重み付け)
             // p[i] は確率でありながら、全体への寄与度 or 重み
@@ -26,6 +35,13 @@ class Entropy {
             acc += weightedInformation;
         }
         return acc;
+    }
+
+    // 注意 !!
+    //  - 通常 log0 は定義されないが、ここでは0と定義する
+    //  - カテゴリが存在しない場合、そのカテゴリはエントロピーに寄与しないことを意味
+    private static double safeLog10(double d) {
+        return (d == 0) ? 0 : Math.log10(d);
     }
 
     /**

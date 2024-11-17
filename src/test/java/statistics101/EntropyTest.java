@@ -21,7 +21,13 @@ class EntropyTest {
 
     static Stream<Arguments> entropy() {
         return Stream.of(
+                // やさしい例
                 arguments(new double[]{0.5, 0.3, 0.2}, 0.447),
+
+                // どれかの p[i] = 1 の時、そのデータのエントロピーは 0 になる
+                arguments(new double[]{0.0, 1.0, 0.0, 0.0}, 0.0),
+
+                // 二つのエントロピーの比較
                 arguments(Entropy.relativeFrequencies(Map.of("A", 32d, "B", 19d, "C", 10d, "D", 24d, "E", 15d)), 0.668),
                 arguments(Entropy.relativeFrequencies(Map.of("A", 28d, "B", 13d, "C", 18d, "D", 29d, "E", 12d)), 0.670)
         );
