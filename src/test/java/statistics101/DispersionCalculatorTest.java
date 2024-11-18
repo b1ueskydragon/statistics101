@@ -8,11 +8,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static statistics101.DispersionCalculator.avg;
 import static statistics101.DispersionCalculator.cv;
 import static statistics101.DispersionCalculator.gi;
 import static statistics101.DispersionCalculator.mad;
+import static statistics101.DispersionCalculator.mean;
 import static statistics101.DispersionCalculator.standardDeviation;
+import static statistics101.DispersionCalculator.toTscore;
+import static statistics101.DispersionCalculator.toZscore;
 import static statistics101.DispersionCalculator.variance;
 
 class DispersionCalculatorTest {
@@ -47,12 +49,39 @@ class DispersionCalculatorTest {
     @ParameterizedTest
     @MethodSource
     void all(int[] xs,
-             double avg, double mad, double gi, double variance, double sd, double cv) {
-        assertThat(avg(xs)).isCloseTo(avg, PER);
+             double mean, double mad, double gi, double variance, double sd, double cv) {
+        assertThat(mean(xs)).isCloseTo(mean, PER);
         assertThat(mad(xs)).isCloseTo(mad, PER);
         assertThat(gi(xs)).isCloseTo(gi, PER);
         assertThat(variance(xs)).isCloseTo(variance, PER);
         assertThat(standardDeviation(xs)).isCloseTo(sd, PER);
         assertThat(cv(xs)).isCloseTo(cv, PER);
     }
+
+    @ParameterizedTest
+    @MethodSource
+    void standardization(int[] x, double[] zScore, double[] tScore) {
+        double[] z = toZscore(x);
+        double[] t = toTscore(z);
+        for (int i = 0; i < x.length; i++) {
+            assertThat(z[i]).isCloseTo(zScore[i], PER);
+            assertThat(t[i]).isCloseTo(tScore[i], PER);
+        }
+    }
+
+    static Stream<Arguments> standardization() {
+        return Stream.of(
+                arguments(
+                        new int[]{2, 4, 6}, // x
+                        new double[]{-1.224, 0, 1.224}, // z
+                        new double[]{37.75, 50, 62.24} // t
+                ),
+                arguments(
+                        new int[]{0, 1, 2, 3, 5, 5, 7, 8, 9, 10}, // x
+                        new double[]{-1.521, -1.217, -0.913, -0.609, 0.0, 0.0, 0.609, 0.913, 1.217, 1.521}, // z
+                        new double[]{34.79, 37.83, 40.87, 43.91, 50.0, 50.0, 56.09, 59.13, 62.17, 65.21} // t
+                )
+        );
+    }
+
 }
