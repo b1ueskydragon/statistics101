@@ -3,69 +3,71 @@ package statistics101;
 import java.util.Arrays;
 
 class DispersionCalculator {
-    static double diffSum(int[] xs) {
-        final int n = xs.length;
+    static double diffSum(double[] x) {
+        final int n = x.length;
         double sum = 0;
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
-                sum += Math.abs(xs[i] - xs[j]); // 差を片方向で計算
+                sum += Math.abs(x[i] - x[j]); // 差を片方向で計算
             }
         }
         return sum * 2; // 対称性を考慮
     }
 
-    // 算術平均
-    static double mean(int[] xs) {
-        double acc = 0;
-        for (int x : xs) {
-            acc += x;
-        }
-        return acc / xs.length;
+    // 単純な総和
+    // 浮動小数点演算による誤差があり得るので単純な for-loop は避ける
+    private static double sum(double[] x) {
+        return Arrays.stream(x).sum();
     }
 
-    static double normalizeDiffSum(int[] xs, double scaleFactor) {
-        int n = xs.length;
-        return diffSum(xs) / (n * n * scaleFactor);
+    // 算術平均
+    static double mean(double[] x) {
+        return sum(x) / x.length;
+    }
+
+    static double normalizeDiffSum(double[] x, double scaleFactor) {
+        final int n = x.length;
+        return diffSum(x) / (n * n * scaleFactor);
     }
 
     // 平均差 (mean absolute difference)
-    static double mad(int[] xs) {
-        return normalizeDiffSum(xs, 1);
+    static double mad(double[] x) {
+        return normalizeDiffSum(x, 1);
     }
 
     // ジニ係数 Gini coefficient
-    static double gi(int[] xs) {
-        return normalizeDiffSum(xs, 2 * mean(xs));
+    static double gi(double[] x) {
+        return normalizeDiffSum(x, 2 * mean(x));
     }
 
     // 分散
-    static double variance(int[] xs) {
-        final double mean = mean(xs);
+    static double variance(double[] x) {
+        final double mean = mean(x);
         double acc = 0;
-        for (int x : xs) {
-            acc += Math.pow((x - mean), 2);
+        for (double xi : x) {
+            acc += Math.pow((xi - mean), 2);
         }
-        final int n = xs.length;
+        final int n = x.length;
         return acc / n;
     }
 
     // 標準偏差
-    static double standardDeviation(int[] xs) {
-        return Math.sqrt(variance(xs));
+    static double standardDeviation(double[] x) {
+        return Math.sqrt(variance(x));
     }
 
     // 変動係数 (coefficient of variation)
-    static double cv(int[] xs) {
-        final double mean = mean(xs);
+    static double cv(double[] x) {
+        final double mean = mean(x);
         if (mean == 0) {
             return 0;
         }
-        return standardDeviation(xs) / mean;
+        return standardDeviation(x) / mean;
     }
 
     // 標準化 (標準得点 or zスコア)
     // z[i] = (x[i] - 平均) / 標準偏差
-    static double[] toZscore(int[] x) {
+    static double[] toZscore(double[] x) {
         final int n = x.length;
         // 配列xを配列zに変換(標準化)するイメージ
         final double[] z = new double[n];
@@ -76,7 +78,7 @@ class DispersionCalculator {
         }
         // 全ての z[i] を足し合わせた結果は0.
         // 算術平均の特徴, 元データxにおいて (x[i] - x̄) の和が 0であるため
-        if (Arrays.stream(z).sum() != 0) {
+        if (sum(z) != 0) {
             throw new IllegalStateException("z-scores must sum to 0");
         }
         return z;
