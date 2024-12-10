@@ -1,4 +1,4 @@
-package statistics101.util;
+package statistics101;
 
 import java.math.BigDecimal;
 import java.util.stream.Stream;
@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static statistics101.util.KahanSum.kahanSum;
-import static statistics101.util.KahanSum.streamSum;
-import static statistics101.util.KahanSum.sumWithoutCompensation;
+import static statistics101.KahanSum.kahanSum;
+import static statistics101.KahanSum.streamSum;
+import static statistics101.KahanSum.sumWithoutCompensation;
 
 @SuppressWarnings("PrimitiveArrayArgumentToVariableArgMethod")
 class KahanSumTest {

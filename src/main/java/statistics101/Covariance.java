@@ -1,6 +1,6 @@
 package statistics101;
 
-import java.util.Arrays;
+import static statistics101.DispersionCalculator.mean;
 
 class Covariance {
     // 2 dimensions
@@ -30,16 +30,5 @@ class Covariance {
             deviation[i] = x[i] - mean;
         }
         return deviation;
-    }
-
-    // 単純な総和
-    // 浮動小数点演算による誤差があり得るので単純な for-loop は避ける
-    private static double sum(double[] x) {
-        return Arrays.stream(x).sum();
-    }
-
-    // 算術平均
-    private static double mean(double[] x) {
-        return sum(x) / x.length;
     }
 }

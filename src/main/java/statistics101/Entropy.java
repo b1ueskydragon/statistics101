@@ -3,6 +3,8 @@ package statistics101;
 import java.util.Arrays;
 import java.util.Map;
 
+import static statistics101.DispersionCalculator.sum;
+
 class Entropy {
     /**
      * @param p probabilities (確率 or 相対度数 or 相対頻度）の配列
@@ -51,7 +53,7 @@ class Entropy {
     static double[] relativeFrequencies(Map<String, Double> rawData) {
         // 絶対度数だけ取り出した
         // 今回階級値は使わない(便宜上 String)
-        Iterable<Double> f = rawData.values();
+        final double[] f = rawData.values().stream().mapToDouble(d -> d).toArray();
 
         // 度数を全て足した結果. e.g. 100人対象の調査なら100
         double n = sum(f);
@@ -60,21 +62,12 @@ class Entropy {
         // 相対度数(相対頻度) はつまり確率である
         double[] p = new double[k];
 
-        var it = f.iterator();
+        // 階級数だけ(k回) loop する
         for (int i = 0; i < k; i++) {
-            // hasNext 確認しなくても階級数だけ(k回) loop するので大丈夫
-            double fi = it.next();
+            double fi = f[i];
             p[i] = fi / n;
         }
 
         return p;
-    }
-
-    private static double sum(Iterable<Double> xs) {
-        double acc = 0;
-        for (var x : xs) {
-            acc += x;
-        }
-        return acc;
     }
 }

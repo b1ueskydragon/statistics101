@@ -16,7 +16,7 @@ class DispersionCalculator {
 
     // 単純な総和
     // 浮動小数点演算による誤差があり得るので単純な for-loop は避ける
-    private static double sum(double[] x) {
+    static double sum(double[] x) {
         return Arrays.stream(x).sum();
     }
 
