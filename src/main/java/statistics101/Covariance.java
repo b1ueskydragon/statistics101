@@ -1,8 +1,14 @@
 package statistics101;
 
 import static statistics101.DispersionCalculator.mean;
+import static statistics101.DispersionCalculator.standardDeviation;
 
 class Covariance {
+    // 相関係数
+    static double correlationCoefficient(double[] x, double[] y) {
+        return covariance(x, y) / (standardDeviation(x) * standardDeviation(y));
+    }
+
     // 2 dimensions
     // データ x と y がどれだけ一緒に変動するかを示す指標
     // Cov(x,y) もしくは　Sxy と表す
