@@ -47,6 +47,7 @@ class RankCorrelationCoefficientTest {
                 Arguments.of(DATA_SET_1, DATA_SET_4, 0.439),
                 Arguments.of(DATA_SET_2, DATA_SET_2, 1),
                 Arguments.of(DATA_SET_2, DATA_SET_4, 0.462),
+                Arguments.of(DATA_SET_3, DATA_SET_3, 1), // タイ (22, 22) あり. 完全一致
                 Arguments.of(DATA_SET_3, DATA_SET_4, 0.359), // タイ (22, 22) あり
                 Arguments.of(DATA_SET_4, DATA_SET_4, 1)
         );
@@ -61,8 +62,7 @@ class RankCorrelationCoefficientTest {
     static Stream<Arguments> testKendallsTauTieError() {
         return Stream.of(
                 Arguments.of(DATA_SET_1, DATA_SET_3, 0.766, 0.769), // タイ (22, 22) あり
-                Arguments.of(DATA_SET_2, DATA_SET_3, 0.499, 0.502), // タイ (22, 22) あり
-                Arguments.of(DATA_SET_3, DATA_SET_3, 0.997, 1)    // 完全一致 (タイ含む)
+                Arguments.of(DATA_SET_2, DATA_SET_3, 0.499, 0.502) // タイ (22, 22) あり
         );
     }
 

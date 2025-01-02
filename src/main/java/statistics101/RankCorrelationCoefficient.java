@@ -1,5 +1,8 @@
 package statistics101;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * スピアマン: 順位差の二乗を使用
  * ケンドール: ペアごとの順序関係を比較
@@ -52,13 +55,10 @@ class RankCorrelationCoefficient {
      * 一方, タイ補正をいれる場合,
      * Kendall's Tau-b
      * Formula:
-     * τ = (G - H) / √((G + H + T_x)(G + H + T_y))
-     * T_x: x 内のタイのペア数
-     * T_y: y 内のタイのペア数
+     * τ = (G - H) / √((nC2 - T)(nC2 - U))
+     * T: Number of pairs of tied values in the dataset x (nC2 - T: x での実際に比較可能なペア数)
+     * U: Number of pairs of tied values in the dataset y (nC2 - U: y での実際に比較可能なペア数)
      * <p>
-     * つまり,
-     * G + H + T_x: dataset x の可能なペアの総数
-     * G + H + T_y: dataset y の可能なペアの総数
      * 対して tau-a は,
      * タイの影響を考慮せず理論上の最大ペア数(nC2)で単純に割る.
      * <p>
@@ -74,30 +74,51 @@ class RankCorrelationCoefficient {
         if (n != y.length) {
             throw new IllegalArgumentException("Arrays must have the same length");
         }
-        double G = 0;
-        double H = 0;
-        double Tx = 0;
-        double Ty = 0;
+        int G_H = 0;
+        double T = computeTieCorrection(x);
+        double U = computeTieCorrection(y);
+
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
-                if (x[j] == x[i]) {
-                    Tx++;
-                }
-                if (y[j] == y[i]) {
-                    Ty++;
-                }
                 if (x[j] == x[i] || y[j] == y[i]) {
                     continue;
                 }
                 // 以下は、Tau-a, Tau-b 関係なくタイがある場合は数えない
+                // タイであるペアは意味がないため
                 if ((x[j] - x[i] > 0 && y[j] - y[i] > 0) ||
                         (x[j] - x[i] < 0 && y[j] - y[i] < 0)) {
-                    G++;
+                    G_H++;
                 } else {
-                    H++;
+                    G_H--;
                 }
             }
         }
-        return (G - H) / Math.sqrt((G + H + Tx) * (G + H + Ty));
+        final double allPairs = n * (n - 1) / 2;
+        return G_H / Math.sqrt((allPairs - T) * (allPairs - U));
+    }
+
+    /**
+     * Calculates the tie correction for a given dataset.
+     * <p>
+     * T = Σ(t_iC2)
+     * t_i is the frequency of the tied value in the dataset.
+     * <p>
+     * e.g.
+     * DataSet: [...., V, V, ...,V ....] (各 "V" の indices: i, j, k とする)
+     * Frequency : 3,
+     * (_, _) <--- i, j, k で作れる２ペア組み合わせの数 : 3C2 = (3 * 2) / (2 * 1)
+     */
+    private static double computeTieCorrection(double[] dataSet) {
+        final Map<Double, Integer> frequencyMap = new HashMap<>();
+        for (var data : dataSet) {
+            frequencyMap.put(data, frequencyMap.getOrDefault(data, 0) + 1);
+        }
+        double acc = 0;
+        for (var freq : frequencyMap.values()) {
+            if (freq > 1) {
+                acc += (freq * (freq - 1)) / 2.0;
+            }
+        }
+        return acc;
     }
 }
