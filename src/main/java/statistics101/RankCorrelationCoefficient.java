@@ -38,12 +38,29 @@ class RankCorrelationCoefficient {
      * <p>
      * Kendall's Tau (r_k)
      * <p>
+     * Kendall's Tau-a
      * Formula:
-     * (G-H) / (n(n-1)/2)
+     * τ = (G-H) / (n(n-1)/2)
      * <p>
      * G: The number of concordant pairs (pairs that are ranked in the same order in both groups).
      * H: The number of discordant pairs (pairs ranked in opposite orders).
      * The denominator is the total number of pairs, nC2, which represents all possible pair combinations in the dataset.
+     * <p>
+     * 一方, タイ補正をいれる場合,
+     * Kendall's Tau-b
+     * Formula:
+     * τ = (G - H) / √((G + H + T_x)(G + H + T_y))
+     * T_x: x 内のタイのペア数
+     * T_y: y 内のタイのペア数
+     * <p>
+     * つまり,
+     * G + H + T_x: dataset x の可能なペアの総数
+     * G + H + T_y: dataset y の可能なペアの総数
+     * 対して tau-a は,
+     * タイの影響を考慮せず理論上の最大ペア数(nC2)で単純に割る.
+     * <p>
+     * ちなみに分母において幾何平均を使う理由は, 両者のスケールを均一化し、バランスを取るため.
+     * 例えば T_x と T_y が極端的に違う場合, 算術平均を使うと片方のタイの影響が過剰に反映される.
      *
      * @param x dataset x
      * @param y dataset y
@@ -54,27 +71,30 @@ class RankCorrelationCoefficient {
         if (n != y.length) {
             throw new IllegalArgumentException("Arrays must have the same length");
         }
-        double gh = 0;
+        double G = 0;
+        double H = 0;
+        double Tx = 0;
+        double Ty = 0;
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
-                // どちらか一方でも同順位(タイ)があった場合は G や H として数えない
-                // 理由: タイのペアは順位の明確な順序を持たないため
-                //
-                // Note: 厳密には Kendall's Tau-b を使った方が精度が高い
-                // τ = (G - H) / √((G + H + T_x)(G + H + T_y))
-                // T_x: x 内のタイのペア数, T_y: y 内のタイのペア数
-                // Tau-b のタイ処理を将来的に実装する場合, この部分を修正する
+                if (x[j] == x[i]) {
+                    Tx++;
+                }
+                if (y[j] == y[i]) {
+                    Ty++;
+                }
                 if (x[j] == x[i] || y[j] == y[i]) {
                     continue;
                 }
+                // 以下は、Tau-a, Tau-b 関係なくタイがある場合は数えない
                 if ((x[j] - x[i] > 0 && y[j] - y[i] > 0) ||
                         (x[j] - x[i] < 0 && y[j] - y[i] < 0)) {
-                    gh += 1;
+                    G++;
                 } else {
-                    gh -= 1;
+                    H++;
                 }
             }
         }
-        return gh / (n * (n - 1) / 2);
+        return (G - H) / Math.sqrt((G + H + Tx) * (G + H + Ty));
     }
 }
