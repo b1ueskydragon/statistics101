@@ -8,9 +8,31 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static statistics101.RankCorrelationCoefficient.kendallsTau;
+import static statistics101.RankCorrelationCoefficient.spearmansRankCc;
 
 class RankCorrelationCoefficientTest {
     private static final Percentage PER = Percentage.withPercentage(1e-1);
+
+    @ParameterizedTest
+    @MethodSource
+    void testSpearmansRankCc(double[] x, double[] y, double expected) {
+        assertThat(spearmansRankCc(x, y)).isCloseTo(expected, PER);
+    }
+
+    static Stream<Arguments> testSpearmansRankCc() {
+        return Stream.of(
+                Arguments.of(DATA_SET_1, DATA_SET_1, 1),
+                Arguments.of(DATA_SET_1, DATA_SET_2, 0.822),
+                Arguments.of(DATA_SET_1, DATA_SET_3, 0.927),
+                Arguments.of(DATA_SET_1, DATA_SET_4, 0.593),
+                Arguments.of(DATA_SET_2, DATA_SET_2, 1),
+                Arguments.of(DATA_SET_2, DATA_SET_3, 0.672),
+                Arguments.of(DATA_SET_2, DATA_SET_4, 0.637),
+                Arguments.of(DATA_SET_3, DATA_SET_3, 1),
+                Arguments.of(DATA_SET_3, DATA_SET_4, 0.534),
+                Arguments.of(DATA_SET_4, DATA_SET_4, 1)
+        );
+    }
 
     @ParameterizedTest
     @MethodSource
@@ -19,7 +41,18 @@ class RankCorrelationCoefficientTest {
     }
 
     static Stream<Arguments> testKendallsTau() {
-        return Stream.of(Arguments.of(DATA_SET_1, DATA_SET_2, 0.664));
+        return Stream.of(
+                Arguments.of(DATA_SET_1, DATA_SET_1, 1),
+                Arguments.of(DATA_SET_1, DATA_SET_2, 0.664),
+                Arguments.of(DATA_SET_1, DATA_SET_3, 0.766),
+                Arguments.of(DATA_SET_1, DATA_SET_4, 0.439),
+                Arguments.of(DATA_SET_2, DATA_SET_2, 1),
+                Arguments.of(DATA_SET_2, DATA_SET_3, 0.499),
+                Arguments.of(DATA_SET_2, DATA_SET_4, 0.462),
+                Arguments.of(DATA_SET_3, DATA_SET_3, 1),
+                Arguments.of(DATA_SET_3, DATA_SET_4, 0.359),
+                Arguments.of(DATA_SET_4, DATA_SET_4, 1)
+        );
     }
 
     // 女性有権者団体 (1) の Social Risk 順位評価
@@ -76,7 +109,7 @@ class RankCorrelationCoefficientTest {
             24, // 自転車
             16, // 飛行機
             19, // 電気
-            30,  // 水泳
+            30, // 水泳
             9, // 避妊ピル
             25, // スキー
             17, // X線
@@ -88,5 +121,17 @@ class RankCorrelationCoefficientTest {
             21, // 抗生物質
             27, // 家庭用具
             29  // 予防注射
+    };
+
+    // 経営者団体 (3) の Social Risk 順位評価
+    private static final double[] DATA_SET_3 = {
+            8, 3, 1, 4, 2, 5, 11, 7, 15, 9, 6, 13, 10, 22, 12, 14,
+            18, 19, 17, 22, 16, 24, 21, 20, 28, 30, 25, 26, 27, 29
+    };
+
+    // 大学教授, 研究者, 専門職等 (4) の Social Risk 順位評価
+    private static final double[] DATA_SET_4 = {
+            20, 1, 4, 2, 6, 3, 12, 17, 8, 5, 18, 13, 23, 26, 29,
+            15, 16, 9, 10, 11, 30, 7, 27, 19, 14, 21, 28, 24, 22, 25
     };
 }

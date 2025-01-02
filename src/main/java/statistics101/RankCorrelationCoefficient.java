@@ -1,7 +1,37 @@
 package statistics101;
 
+/**
+ * スピアマン: 順位差の二乗を使用
+ * ケンドール: ペアごとの順序関係を比較
+ * <p>
+ * 一般的に,
+ * |rs| ≥ |τ|
+ * スピアマン係数(r_s) ≈ 1.5 × ケンドール係数(τ もしくは r_k)
+ */
 class RankCorrelationCoefficient {
-    // TODO: Spearman’s Rank Correlation Coefficient (r_s)
+    /**
+     * Spearman's Rank Correlation Coefficient
+     * <p>
+     * Formula:
+     * r_s = 1 - (6Σ(d_i)²) / (n(n²-1))
+     * where d_i is the difference between the ranks of corresponding elements in the two groups,
+     * and n is the total number of elements.
+     *
+     * @param x dataset x
+     * @param y dataset y
+     * @return r_s
+     */
+    static double spearmansRankCc(double[] x, double[] y) {
+        final double n = x.length;
+        if (n != y.length) {
+            throw new IllegalArgumentException("Arrays must have the same length");
+        }
+        double acc = 0;
+        for (int i = 0; i < n; i++) {
+            acc += Math.pow(x[i] - y[i], 2);
+        }
+        return 1 - (6 * acc / (Math.pow(n, 3) - n));
+    }
 
     /**
      * Note: 通常のピアソン相関係数 (r_xy) と違って「順位相関係数」なので, Kendall's Tau を二乗して決定係数としては使えない.
