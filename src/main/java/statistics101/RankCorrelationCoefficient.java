@@ -67,7 +67,8 @@ class RankCorrelationCoefficient {
                 if (x[j] == x[i] || y[j] == y[i]) {
                     continue;
                 }
-                if (x[j] - x[i] > 0 && y[j] - y[i] > 0) {
+                if ((x[j] - x[i] > 0 && y[j] - y[i] > 0) ||
+                        (x[j] - x[i] < 0 && y[j] - y[i] < 0)) {
                     gh += 1;
                 } else {
                     gh -= 1;
