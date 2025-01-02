@@ -5,12 +5,17 @@ package statistics101;
  * ケンドール: ペアごとの順序関係を比較
  * <p>
  * 一般的に,
- * |rs| ≥ |τ|
+ * |r_s| ≥ |τ|
  * スピアマン係数(r_s) ≈ 1.5 × ケンドール係数(τ もしくは r_k)
+ * <p>
+ * Note:
+ * どちらも通常のピアソン相関係数 (r_xy) と違って順位相関係数である
+ * - スピアマンの順位相関係数は, 線形モデルの説明力を示す指標ではないため決定係数として使えない.
+ * - Kendall's Tauも, 二乗して決定係数としては使えない.
  */
 class RankCorrelationCoefficient {
     /**
-     * Spearman's Rank Correlation Coefficient
+     * Spearman's Rank Correlation Coefficient (r_s)
      * <p>
      * Formula:
      * r_s = 1 - (6Σ(d_i)²) / (n(n²-1))
@@ -34,8 +39,6 @@ class RankCorrelationCoefficient {
     }
 
     /**
-     * Note: 通常のピアソン相関係数 (r_xy) と違って「順位相関係数」なので, Kendall's Tau を二乗して決定係数としては使えない.
-     * <p>
      * Kendall's Tau (r_k)
      * <p>
      * Kendall's Tau-a
