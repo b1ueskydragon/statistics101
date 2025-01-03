@@ -33,13 +33,18 @@ class LinearCongruentialGenerator {
         this.m = 1L << 32; // 2^32
     }
 
+    // LCG は 状態を持つ 擬似乱数生成器
     // 次の乱数を生成
     long next() {
         // LCG lcg = new LCG(seed);
         // lcg.next();  // 1回目の生成
         // lcg.next();  // 2回目の生成：1回目の x を使う
         // ... のため x を更新する必要がある
-        x = (a * x + c) % m;
+
+        // ビットマスク
+        // n が 2の累乗(2^k)のとき, x % n == x & (n - 1)
+        // そのため & (m - 1) は % m と同じ.
+        x = (a * x + c) & (m - 1);
         return x;
     }
 
