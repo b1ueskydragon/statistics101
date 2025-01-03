@@ -52,4 +52,21 @@ class LinearCongruentialGenerator {
     double uniformRandom() {
         return next() / (double) m;
     }
+
+    // [1,11]の整数乱数を生成
+    // uniformRandom() の値 r に応じて以下の通り値を返す:
+    // [0, 1/11) → 1
+    // [1/11, 2/11) → 2
+    // ...
+    // [10/11, 1] → 11
+    int nextInt1to11() {
+        final int rangeInclusive = 11;
+        final double r = uniformRandom(); // r は [0,1] の一様乱数
+        for (int i = 0; i < rangeInclusive; i++) {
+            if (r >= (double) i / rangeInclusive && r < (double) (i + 1) / rangeInclusive) {
+                return i + 1;
+            }
+        }
+        return rangeInclusive; // r = 1 の場合
+    }
 }
