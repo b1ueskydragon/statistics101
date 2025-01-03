@@ -44,25 +44,14 @@ class RankCorrelationCoefficientTest {
         return Stream.of(
                 Arguments.of(DATA_SET_1, DATA_SET_1, 1),
                 Arguments.of(DATA_SET_1, DATA_SET_2, 0.664),
+                Arguments.of(DATA_SET_1, DATA_SET_3, 0.768), //テキストの解は 0.766
                 Arguments.of(DATA_SET_1, DATA_SET_4, 0.439),
                 Arguments.of(DATA_SET_2, DATA_SET_2, 1),
+                Arguments.of(DATA_SET_2, DATA_SET_3, 0.502), // テキストの解は 0.499
                 Arguments.of(DATA_SET_2, DATA_SET_4, 0.462),
-                Arguments.of(DATA_SET_3, DATA_SET_3, 1), // タイ (22, 22) あり. 完全一致
-                Arguments.of(DATA_SET_3, DATA_SET_4, 0.359), // タイ (22, 22) あり
+                Arguments.of(DATA_SET_3, DATA_SET_3, 1),
+                Arguments.of(DATA_SET_3, DATA_SET_4, 0.359),
                 Arguments.of(DATA_SET_4, DATA_SET_4, 1)
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void testKendallsTauTieError(double[] x, double[] y, double start, double end) {
-        assertThat(kendallsTau(x, y)).isBetween(start, end);
-    }
-
-    static Stream<Arguments> testKendallsTauTieError() {
-        return Stream.of(
-                Arguments.of(DATA_SET_1, DATA_SET_3, 0.766, 0.769), // タイ (22, 22) あり
-                Arguments.of(DATA_SET_2, DATA_SET_3, 0.499, 0.502) // タイ (22, 22) あり
         );
     }
 
@@ -135,6 +124,7 @@ class RankCorrelationCoefficientTest {
     };
 
     // 経営者団体 (3) の Social Risk 順位評価
+    // Note: タイ (22, 22) あり
     private static final double[] DATA_SET_3 = {
             8, 3, 1, 4, 2, 5, 11, 7, 15, 9, 6, 13, 10, 22, 12, 14,
             18, 19, 17, 22, 16, 24, 21, 20, 28, 30, 25, 26, 27, 29
