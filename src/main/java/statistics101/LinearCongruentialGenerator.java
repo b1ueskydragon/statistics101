@@ -25,12 +25,26 @@ class LinearCongruentialGenerator {
     private final long c;
     private final long m;
 
-    LinearCongruentialGenerator(long seed) {
+    enum Mode {
+        ANSI_C,
+        NUMERICAL_RECIPES,
+    }
+
+    LinearCongruentialGenerator(long seed, Mode mode) {
         this.x = seed;
-        // Numerical Recipes
-        this.a = 1664525; // m との関係で良い周期性を持ち, 生成される値の分布が比較的一様
-        this.c = 1013904223; // m と互いに素, 十分に大きな値
-        this.m = 1L << 32; // 2^32
+        switch (mode) {
+            case NUMERICAL_RECIPES -> {
+                this.a = 1664525; // m との関係で良い周期性を持ち, 生成される値の分布が比較的一様
+                this.c = 1013904223; // m と互いに素, 十分に大きな値
+                this.m = 1L << 32; // 2^32
+            }
+            case ANSI_C -> {
+                this.a = 1103515245;
+                this.c = 12345;
+                this.m = 1L << 31;
+            }
+            default -> throw new IllegalArgumentException(mode + " is Invalid.");
+        }
     }
 
     // LCG は 状態を持つ 擬似乱数生成器
@@ -53,7 +67,8 @@ class LinearCongruentialGenerator {
         return next() / (double) m;
     }
 
-    // [1,11]の整数乱数を生成
+    // こちらは単に, テキストの模範解答の再現.
+    // [1,11]の整数乱数を生成.
     // uniformRandom() の値 r に応じて以下の通り値を返す:
     // [0, 1/11) → 1
     // [1/11, 2/11) → 2
@@ -68,5 +83,12 @@ class LinearCongruentialGenerator {
             }
         }
         return rangeInclusive; // r = 1 の場合
+    }
+
+    // より汎用的なもの
+    public int nextInt(int min, int max) {
+        // 本当は next() % (max − min + 1) なのだが通常の % は負の数になる可能性があるため, floorMod に代替.
+        // e.g. 3 * -2 + 1 = -5, -5 % 3 = 1
+        return min + Math.floorMod(next(), (max - min + 1));
     }
 }
